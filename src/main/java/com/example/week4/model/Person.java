@@ -1,8 +1,5 @@
 package com.example.week4.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,22 +11,33 @@ import java.util.Set;
 public class Person implements Serializable {
     @Id
     @GeneratedValue
+    @Column(name = "personId")
     private Long id;
 
     @Column(nullable = false)
-    private String name;
-
+    private Date birthDate;
     @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
-    private String university;
+    private String name;
+
 
     @Column(nullable = false)
-    private Date birthDate;
+    private String university;
 
-    @ManyToOne
-    private Team team;
+
+
+    @ManyToMany
+    private Set<Team> teams =  new HashSet();
+
+    public Set<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(Set<Team> teams) {
+        this.teams = teams;
+    }
 
     @ManyToMany
     private Set<Contest> contests = new HashSet();
@@ -74,13 +82,6 @@ public class Person implements Serializable {
         this.birthDate = birthDate;
     }
 
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
 
     public Set<Contest> getContests() {
         return contests;
