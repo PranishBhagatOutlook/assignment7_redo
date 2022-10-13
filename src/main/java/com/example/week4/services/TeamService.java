@@ -32,7 +32,7 @@ public class TeamService {
     public Team checkTeamIdExists(Long teamId) {
         Team team = teamRepository.findTeamById(teamId);
         if (team == null) {
-            throw new CustomException("The provided teamId " + teamId + " in the api does not exist in the system." + "Please provide valid teamId");
+            throw new CustomException("The provided teamId in the api does not exist in the system." + "Please provide valid teamId");
         }
         return team;
     }
@@ -51,10 +51,10 @@ public class TeamService {
         Contest contest = contestService.checkContestIdExists(contestId);
         if (contestService.checkWritableFalse(contest)) {
 
-            throw new CustomException("The contestId " + contestId + " writable flag is false. Registration is not allowed.");
+            throw new CustomException("This contest's writable flag is false. Registration is not allowed.");
         }
         ;
-        contestService.checkAvailableCapacity(contestId);
+        contestService.checkAvailableCapacity(contest);
 
         Person coach = checkCoach(team);
         checkNullTeamMembers(team);
@@ -265,7 +265,7 @@ public class TeamService {
         if (superContest.getWritable() == false) {
             throw new CustomException("The supercontest is not editable. Please set the writable flag as true");
         }
-        contestService.checkAvailableCapacity(contest.getSuperContestId());
+        contestService.checkAvailableCapacity(superContest);
         checkTeamMembersInOtherTeam(team, contest.getSuperContestId());
         Team promotedTeam = promotedTeam(team, contest);
         teamRepository.save(promotedTeam);
@@ -309,9 +309,10 @@ public class TeamService {
             throw new CustomException("The provided teamId is not in the given contest with contestId");
         }
 
-        if (contestService.checkWritableFalse(contest)){
+        if (contestService.checkWritableFalse(contest)) {
             throw new CustomException("The contest writable flag is false. Updating rank is not allowed");
-        };
+        }
+        ;
 
         team.setRank(rank);
         teamRepository.save(team);
@@ -333,7 +334,7 @@ public class TeamService {
 
 
     public Team editTeam(Team teamRequestBody) {
-        Team existingTeam  = checkTeamIdExists(teamRequestBody.getId());
+        Team existingTeam = checkTeamIdExists(teamRequestBody.getId());
         Contest contest = contestService.findContestById(existingTeam.getContest().getId());
         if (contestService.checkWritableFalse(contest)) {
             throw new CustomException("The contestId associated with this team i.e. contestId=" +
@@ -344,7 +345,7 @@ public class TeamService {
         existingTeam.setName(teamRequestBody.getName());
         existingTeam.setRank(teamRequestBody.getRank());
 
-        if (checkIfValidState(teamRequestBody.getState())){
+        if (checkIfValidState(teamRequestBody.getState())) {
             existingTeam.setState(teamRequestBody.getState());
         } else {
             throw new CustomException("The provided State does not match any state type in the system. Please " +
@@ -354,11 +355,11 @@ public class TeamService {
         return existingTeam;
     }
 
-    public Boolean checkIfValidState(Team.State state){
-         List stateList = Arrays.asList(Team.State.values());
-         if (stateList.contains(state)){
-             return true;
-         }
+    public Boolean checkIfValidState(Team.State state) {
+        List stateList = Arrays.asList(Team.State.values());
+        if (stateList.contains(state)) {
+            return true;
+        }
         return false;
     }
 }

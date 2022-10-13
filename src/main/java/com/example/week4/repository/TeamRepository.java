@@ -21,8 +21,11 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
     List<Team> findTeamsByContestantIdAndContestId(@Param("personId") Long personId,
                                                    @Param("contestId") Long contestId);
+
     Set<Team> findTeamsByContestId(Long contestId);
 
     Team findTeamByIdAndAndContest(Long teamId, Contest contest);
+
+    List<Team> findTeamsByContest(Contest contest);
 
 }

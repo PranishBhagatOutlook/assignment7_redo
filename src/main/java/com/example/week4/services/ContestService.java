@@ -25,36 +25,23 @@ public class ContestService {
         return contestRepository.save(contest);
     }
 
-    public void checkAvailableCapacity(Long contestId) {
+    public void checkAvailableCapacity(Contest contest) {
         Integer availableContestCapacity =
-                findContestById(contestId).getCapacity() - exhaustedCapacity(contestId);
+                contest.getCapacity() - exhaustedCapacity(contest);
         if (availableContestCapacity == 0) {
             throw new CustomException("Contest capacity limit reached.");
         }
     }
 
-    public Contest findContestById(Long contestId) {
-        return checkContestIdExists(contestId);
-    }
-
-    public Integer exhaustedCapacity(Long contestId) {
-        List<String> teamsInContest = teamRepository.findByContestId(contestId).stream().map(i -> i.getName()).collect(Collectors.toList());
+    public Integer exhaustedCapacity(Contest contest) {
+        List<String> teamsInContest = teamRepository.findTeamsByContest(contest).stream().map(i -> i.getName()).collect(Collectors.toList());
         return teamsInContest.size();
-    }
-
-    public Contest checkContestIdExists(Long contestId) {
-        Contest contest = contestRepository.findContestById(contestId);
-        if (contest == null) {
-            throw new CustomException("The provided contestId " + contestId + " in the api does not exist in the system." +
-                    "Please provide valid contestId");
-        }
-        return contest;
     }
 
     public Contest editContest(Contest contestRequestBody) {
         Contest contest = checkContestExists(contestRequestBody);
         if (checkWritableFalse(contest) == true) {
-            throw new CustomException("The contest with contestId " + contest.getId() + " is not writable. " +
+            throw new CustomException("This contest is not writable. " +
                     "Please set the writable as true.");
         }
         contest = contestRequestBody;
@@ -65,7 +52,7 @@ public class ContestService {
     public Contest checkContestExists(Contest contest) {
         Contest oldContest = contestRepository.findContestById(contest.getId());
         if (oldContest == null) {
-            throw new CustomException("The provided contestid " + contest.getId() + " in the request body does not exist in the system." +
+            throw new CustomException("The provided contestid in the request body does not exist in the system." +
                     "Please provide valid contestId");
         }
         return oldContest;
@@ -84,6 +71,19 @@ public class ContestService {
         contest.setWritable(true);
         contestRepository.save(contest);
         return contest;
+    }
+
+    public Contest checkContestIdExists(Long contestId) {
+        Contest contest = contestRepository.findContestById(contestId);
+        if (contest == null) {
+            throw new CustomException("The provided contestId in the api does not exist in the system." +
+                    "Please provide valid contestId");
+        }
+        return contest;
+    }
+
+    public Contest findContestById(Long contestId) {
+        return checkContestIdExists(contestId);
     }
 
     public Contest setReadOnly(@PathVariable("contestId") Long contestId) {
