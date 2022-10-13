@@ -1,7 +1,5 @@
 package com.example.week4.controller;
 
-import com.example.week4.errors.CustomException;
-import com.example.week4.model.PromoteTeamDTO;
 import com.example.week4.model.Team;
 import com.example.week4.repository.TeamRepository;
 import com.example.week4.services.SuperRepository;
@@ -82,8 +80,8 @@ public class TeamController {
     }
 
 
-    @PutMapping(path="/editTeam")
-    public Team editTeam(@RequestBody Team team){
+    @PutMapping(path = "/editTeam")
+    public Team editTeam(@RequestBody Team team) {
         return teamService.editTeam(team);
     }
 }

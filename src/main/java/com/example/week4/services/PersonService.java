@@ -1,7 +1,5 @@
 package com.example.week4.services;
 
-import com.example.week4.errors.CustomException;
-import com.example.week4.model.Contest;
 import com.example.week4.model.Person;
 import com.example.week4.model.Team;
 import com.example.week4.repository.PersonRepository;
@@ -27,8 +25,8 @@ public class PersonService {
     }
 
 
-    public Person findPersonByEmail(String email){
-        return  personRepository.findPersonByEmail(email);
+    public Person findPersonByEmail(String email) {
+        return personRepository.findPersonByEmail(email);
 
     }
 
@@ -37,11 +35,11 @@ public class PersonService {
         return personRepository.save(person);
     }
 
-    public List<Person> getPersonbyEmail(String email){
+    public List<Person> getPersonbyEmail(String email) {
         return personRepository.getPersonByEmail(email);
     }
 
-    public List<Person> findPersonByTeamsIn(Set<Team> teams){
+    public List<Person> findPersonByTeamsIn(Set<Team> teams) {
         return personRepository.findPersonByTeamsIn(teams);
     }
 }

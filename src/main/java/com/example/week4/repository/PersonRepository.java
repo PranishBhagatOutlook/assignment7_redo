@@ -1,6 +1,5 @@
 package com.example.week4.repository;
 
-import com.example.week4.model.Contest;
 import com.example.week4.model.Person;
 import com.example.week4.model.Team;
 import org.springframework.data.repository.CrudRepository;
@@ -17,7 +16,7 @@ public interface PersonRepository extends CrudRepository<Person, Long> {
 
     List<Person> getPersonByEmail(@Param("email") String email);
 
-    List<Person> findPersonByTeamsIn(@Param("teams")Set<Team> teams);
+    List<Person> findPersonByTeamsIn(@Param("teams") Set<Team> teams);
 
     Person findPersonByEmail(@Param("email") String email);
 

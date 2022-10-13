@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-
 import java.util.stream.Collectors;
 
 
@@ -18,24 +17,12 @@ import java.util.stream.Collectors;
 public class ContestService {
 
     @Autowired
-    private ContestRepository contestRepository;
-
-    @Autowired
     TeamRepository teamRepository;
-
-
-    public Contest findContestById(Long contestId) {
-        return checkContestIdExists(contestId);
-    }
-
+    @Autowired
+    private ContestRepository contestRepository;
 
     public Contest createContest(Contest contest) {
         return contestRepository.save(contest);
-    }
-
-    public Integer exhaustedCapacity(Long contestId) {
-        List<String> teamsInContest = teamRepository.findByContestId(contestId).stream().map(i -> i.getName()).collect(Collectors.toList());
-        return teamsInContest.size();
     }
 
     public void checkAvailableCapacity(Long contestId) {
@@ -46,13 +33,13 @@ public class ContestService {
         }
     }
 
-    public Contest checkContestExists(Contest contest) {
-        Contest oldContest = contestRepository.findContestById(contest.getId());
-        if (oldContest == null) {
-            throw new CustomException("The provided contestid " + contest.getId() + " in the request body does not exist in the system." +
-                    "Please provide valid contestId");
-        }
-        return oldContest;
+    public Contest findContestById(Long contestId) {
+        return checkContestIdExists(contestId);
+    }
+
+    public Integer exhaustedCapacity(Long contestId) {
+        List<String> teamsInContest = teamRepository.findByContestId(contestId).stream().map(i -> i.getName()).collect(Collectors.toList());
+        return teamsInContest.size();
     }
 
     public Contest checkContestIdExists(Long contestId) {
@@ -62,13 +49,6 @@ public class ContestService {
                     "Please provide valid contestId");
         }
         return contest;
-    }
-
-    public Boolean checkWritableFalse(Contest contest) {
-        if (contest.getWritable() == false) {
-            return true;
-        }
-        return false;
     }
 
     public Contest editContest(Contest contestRequestBody) {
@@ -82,6 +62,21 @@ public class ContestService {
         return contest;
     }
 
+    public Contest checkContestExists(Contest contest) {
+        Contest oldContest = contestRepository.findContestById(contest.getId());
+        if (oldContest == null) {
+            throw new CustomException("The provided contestid " + contest.getId() + " in the request body does not exist in the system." +
+                    "Please provide valid contestId");
+        }
+        return oldContest;
+    }
+
+    public Boolean checkWritableFalse(Contest contest) {
+        if (contest.getWritable() == false) {
+            return true;
+        }
+        return false;
+    }
 
     public Contest setEditable(@PathVariable("contestId") Long contestId) {
         checkContestIdExists(contestId);
