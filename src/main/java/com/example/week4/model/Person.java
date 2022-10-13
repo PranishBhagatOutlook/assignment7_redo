@@ -14,12 +14,12 @@ public class Person implements Serializable {
     @Column(name = "personId")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Date birthDate;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String name;
 
 

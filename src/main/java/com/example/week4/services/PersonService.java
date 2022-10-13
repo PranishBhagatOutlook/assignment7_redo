@@ -1,5 +1,6 @@
 package com.example.week4.services;
 
+import com.example.week4.errors.CustomException;
 import com.example.week4.model.Contest;
 import com.example.week4.model.Person;
 import com.example.week4.model.Team;
@@ -18,17 +19,19 @@ public class PersonService {
     private PersonRepository personRepository;
 
     public Person findPersonById(@PathVariable("id") Long id) {
-        Person person = personRepository.findById(id).get();
-        if (person.getName() != null) {
+        Person person = personRepository.findPersonById(id);
+        if (person != null) {
             return person;
         }
         return null;
     }
 
 
-//    public List<Person> getPersonByTeamId(Long teamId) {
-//        return personRepository.getPersonByTeamId(teamId);
-//    }
+    public Person findPersonByEmail(String email){
+        return  personRepository.findPersonByEmail(email);
+
+    }
+
 
     public Person createPerson(Person person) {
         return personRepository.save(person);

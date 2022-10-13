@@ -19,7 +19,7 @@ public class SuperRepository {
 
     public void populate() {
         Contest contest = createContest(2, new Date("01/01/2022"), "World Finals 1",
-                true, new Date("01/01/2021"), new Date("12/31/2021"), null, true);
+                true, new Date("01/01/2021"), new Date("12/31/2021"), null, false);
         Contest contest1 = createContest(1, new Date("01/01/2022"), "Regionals 1",
                 true, new Date("01/01/2021"), new Date("12/31/2021"), contest.getId(), false);
         // check for contest register valid 1
@@ -31,9 +31,6 @@ public class SuperRepository {
         // check for edit contest, set readable, set writable
         Contest contest4 = createContest(1, new Date("01/01/2022"), "Regionals 4",
                 true, new Date("01/01/2021"), new Date("12/31/2021"), contest.getId(), true);
-
-
-        // promote Team check
 
         Contest contest5 = createContest(1, new Date("01/01/2022"), "Regionals 5",
                 true, new Date("01/01/2021"), new Date("12/31/2021"), contest.getId(), true);

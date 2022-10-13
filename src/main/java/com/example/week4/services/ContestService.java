@@ -24,12 +24,8 @@ public class ContestService {
     TeamRepository teamRepository;
 
 
-    public Contest findContestById(@PathVariable("id") Long id) {
-        Contest contest = contestRepository.findById(id).get();
-        if (contest == null) {
-          throw new CustomException("the provided contestId does not exist");
-        }
-        return contest;
+    public Contest findContestById(Long contestId) {
+        return checkContestIdExists(contestId);
     }
 
 
@@ -50,45 +46,40 @@ public class ContestService {
         }
     }
 
-    public void checkContestExists(Contest contest) {
+    public Contest checkContestExists(Contest contest) {
         Contest oldContest = contestRepository.findContestById(contest.getId());
         if (oldContest == null) {
-            throw new CustomException("The provided contest in the request body does not exist in the system." +
+            throw new CustomException("The provided contestid " + contest.getId() + " in the request body does not exist in the system." +
                     "Please provide valid contestId");
         }
+        return oldContest;
     }
 
     public Contest checkContestIdExists(Long contestId) {
-       Contest contest = contestRepository.findContestById(contestId);
+        Contest contest = contestRepository.findContestById(contestId);
         if (contest == null) {
-            throw new CustomException("The provided contestId in the api does not exist in the system." +
+            throw new CustomException("The provided contestId " + contestId + " in the api does not exist in the system." +
                     "Please provide valid contestId");
         }
         return contest;
     }
 
-    public void checkWritableFalse(Contest contest) {
+    public Boolean checkWritableFalse(Contest contest) {
         if (contest.getWritable() == false) {
-            throw new CustomException("The already existing contest's writable flag is set to false. " +
-                    "You cannot edit this contest");
+            return true;
         }
+        return false;
     }
 
-    public Contest editContest(Contest contest) {
-        checkContestExists(contest);
-
-        Contest oldContest = findContestById(contest.getId());
-
-        checkWritableFalse(oldContest);
-
-        Contest newContest = new Contest();
-        if (oldContest.getWritable() == true) {
-            newContest.setId(contest.getId());
-            newContest = contestRepository.save(contest);
-        } else {
-            return null;
+    public Contest editContest(Contest contestRequestBody) {
+        Contest contest = checkContestExists(contestRequestBody);
+        if (checkWritableFalse(contest) == true) {
+            throw new CustomException("The contest with contestId " + contest.getId() + " is not writable. " +
+                    "Please set the writable as true.");
         }
-        return newContest;
+        contest = contestRequestBody;
+        contestRepository.save(contest);
+        return contest;
     }
 
 
@@ -122,7 +113,7 @@ public class ContestService {
         return contest;
     }
 
-    public Contest saveContest(Contest contest){
+    public Contest saveContest(Contest contest) {
         return contestRepository.save(contest);
     }
 

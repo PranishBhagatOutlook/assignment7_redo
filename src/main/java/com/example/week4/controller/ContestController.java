@@ -24,9 +24,9 @@ public class ContestController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public Contest findContestById(@PathVariable("id") Long id) {
-        return contestService.findContestById(id);
+    @GetMapping("/contestId={contestId}")
+    public Contest findContestById(@PathVariable("contestId") Long contestId) {
+        return contestService.findContestById(contestId);
     }
 
 
@@ -42,7 +42,7 @@ public class ContestController {
         return contestService.editContest(contest);
     }
 
-    @PutMapping(path = "/setEditable/{contestId}")
+    @PutMapping(path = "/setEditable/contestId={contestId}")
     public Contest setEditable(
             @PathVariable("contestId") Long contestId
     ) {
@@ -50,7 +50,7 @@ public class ContestController {
     }
 
 
-    @PutMapping(path = "/setReadOnly/{contestId}")
+    @PutMapping(path = "/setReadOnly/contestId={contestId}")
     public Contest setReadOnly(
             @PathVariable("contestId") Long contestId) {
         return contestService.setReadOnly(contestId);

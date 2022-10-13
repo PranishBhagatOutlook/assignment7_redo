@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping("/team")
 public class TeamController {
@@ -35,9 +37,9 @@ public class TeamController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public Team findTeamById(@PathVariable("id") Long id) {
-        return teamService.findTeamById(id);
+    @GetMapping("/teamId={teamId}")
+    public Team findTeamById(@PathVariable("teamId") Long teamId) {
+        return teamService.findTeamById(teamId);
     }
 
 
@@ -47,36 +49,41 @@ public class TeamController {
         return teamService.createTeam(team);
     }
 
-//    @PostMapping("/contestRegister")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public Team contestRegister(@RequestBody  Team team, @RequestParam  Long contestId) {
-//        return teamService.contestRegister(team,contestId);
-//    }
 
-    @PostMapping("/contestRegister/{contestId}")
+    @PostMapping("/contestRegister/contestId={contestId}")
     public Team contestRegister(@RequestBody Team team,
                                 @PathVariable("contestId") Long contestId) {
         return teamService.contestRegister(team, contestId);
 
     }
 
+    @PostMapping(path = "/promoteTeam/teamId={teamId}/contestId={contestId}")
+    public Team setPromoteTeam(
+            @PathVariable("teamId") Long teamId, @PathVariable("contestId") Long contestId) throws Exception {
 
-    @PutMapping(path = "/editName/{teamId}")
-    public Team editTeamName(
-            @PathVariable("teamId") Long teamId, @RequestParam("name") String name) {
-        return teamService.editTeamName(teamId, name);
+        return teamService.promoteTeam(teamId, contestId);
+    }
+
+    @GetMapping(path = "/listTeamsByContestId/contestId={contestId}")
+    public Set<Team> listTeamsByContestId(@PathVariable("contestId") Long contestId) {
+        return teamService.findTeamsByContestId(contestId);
+    }
+
+    @PutMapping(path = "/updateRank/teamId={teamId}/contestId={contestId}/rank={rank}")
+    public Team updateRank(@PathVariable("teamId") Long teamId,
+                           @PathVariable("contestId") Long contestId,
+                           @PathVariable("rank") Integer rank) {
+        return teamService.updateRank(teamId, contestId, rank);
+    }
+
+    @DeleteMapping(path = "/deleteTeam/teamId={TeamId}/contestId={contestId}")
+    public void deleteTeam(@PathVariable("teamId") Long teamId, @PathVariable("contestId") Long contestId) {
+        teamService.deleteTeam(teamId, contestId);
     }
 
 
-    @PostMapping(path = "/promoteTeam/{teamId}/{contestId}")
-    public Team setPromoteTeam(
-            @PathVariable("teamId") Long teamId, @PathVariable("contestId") Long contestId) throws Exception {
-        if (teamId == null) {
-            throw new CustomException("TeamId should not be null");
-        }
-        if (contestId == null) {
-            throw new CustomException("ContestId should not be null");
-        }
-        return teamService.promoteTeam(teamId, contestId);
+    @PutMapping(path="/editTeam")
+    public Team editTeam(@RequestBody Team team){
+        return teamService.editTeam(team);
     }
 }
